@@ -15,13 +15,6 @@ public class Main {
                 Socket sock = server.accept();
                 Client client = new Client(sock);
 
-                client.send("Hello python!\n");
-
-                System.out.println(client.receive());
-
-                client.close();
-                break;
-
                 //clients.add(client);
 
             }catch (IOException ignored){ignored.printStackTrace();} // just ignore any failures, they can just connect again
