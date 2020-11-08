@@ -14,8 +14,9 @@ public class Main {
             try {
                 Socket sock = server.accept();
                 Client client = new Client(sock);
+                client.start();
 
-                //clients.add(client);
+                clients.add(client);
 
             }catch (IOException ignored){ignored.printStackTrace();} // just ignore any failures, they can just connect again
         }

@@ -3,9 +3,11 @@ import com.google.gson.Gson;
 import java.io.*;
 import java.net.Socket;
 
-public class Client {
+public class Client extends Thread{
 
     private Socket sock;
+
+    private Message currentMessage;
 
     private final BufferedReader reader;
     private final PrintWriter writer;
@@ -18,29 +20,26 @@ public class Client {
         writer = new PrintWriter(sock.getOutputStream(), true);
         reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-        System.out.println("Connected to by "+sock.getInetAddress());
-
-        while(true){
-            State s = getState();
-            if(s == null){
-                break;
-            }
-            System.out.println(s);
-        }
     }
 
-    private State getState(){
-        String raw = receive();
+    public void run(){
+        while(true){
+            String raw = receive();
+            if(raw == null){
+                break;
+            }
 
-        if(raw == null){
-            return null;
+            currentMessage = gson.fromJson(raw, Message.class);
+
+
+            String toSend = gson.toJson(currentMessage);
+            send(toSend);
         }
-
-        return gson.fromJson(raw, State.class);
     }
 
     private void send(String message) {
         writer.write(message+"\n");
+        writer.flush();
     }
 
     private String receive() {
